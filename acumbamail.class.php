@@ -3,11 +3,9 @@
 
 class AcumbamailAPI {
     private $auth_token;
-    private $customer_id;
 
-    function __construct($customer_id, $auth_token){
+    function __construct($auth_token){
         $this->auth_token = $auth_token;
-        $this->customer_id = $customer_id;
     }
 
     public function setAuthToken($auth_token) {
@@ -409,13 +407,43 @@ class AcumbamailAPI {
         return $this->callAPI($request, $data);
     }
 
+    public function sendSMS($messages) {
+        $request = "sendSMS";
+        $data = array(
+            "messages" => $messages,
+        );
+        return $this->callAPI($request, $data);
+    }
+
+    /** sendOne
+            Parameters:
+                from = from email
+                to = to email
+                body = Cuerpo del email
+                subject = Asunto del email
+                category = Categoría
+            Example: sendOne('from@acumbamail.com', 'to@acumbamail.com', 'mensage', 'asunto')
+    **/
+    public function sendOne($from, $to, $body, $subject, $category='') {
+        $request = "sendOne";
+
+        $data = array(
+            "from_email" => $from,
+            "to_email" => $to,
+            "body" => $body,
+            "subject" => $subject,
+            "category" => $category
+        );
+
+        return $this->callAPI($request, $data);
+    }
+
     // callAPI($request, $data = array())
     // Realiza la llamada a la API de Acumbamail con los datos proporcionados
     function callAPI($request, $data = array()){
         $url = "https://acumbamail.com/api/1/".$request.'/';
 
         $fields = array(
-            'customer_id' => $this->customer_id,
             'auth_token'=> $this->auth_token,
             'response_type' => 'json',
         );
